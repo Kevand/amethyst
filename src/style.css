@@ -1,0 +1,25 @@
+:root {
+  --dark: #1a1d26;
+  --black: #0b0d12;
+}
+
+* {
+  font-family: "SUSE";
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  background: linear-gradient(45deg, var(--dark), var(--black));
+}
+
+.menu-bar {
+  max-height: 5rem;
+  width: 100vw;
+  padding: 8px;
+
+  & img {
+    height: calc(5rem - 16px);
+  }
+}
