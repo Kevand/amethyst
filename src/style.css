@@ -12,14 +12,15 @@ body {
   margin: 0px;
   padding: 0px;
   background: linear-gradient(45deg, var(--dark), var(--black));
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.menu-bar {
-  max-height: 5rem;
-  width: 100vw;
-  padding: 8px;
-
-  & img {
-    height: calc(5rem - 16px);
-  }
+canvas {
+  width: 1280px;
+  aspect-ratio: 16/9;
+  border: 2px solid #aaa;
 }

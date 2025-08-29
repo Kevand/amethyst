@@ -1,8 +1,11 @@
 import "./style.css";
-import { createMenuBarUI } from "./ui/menu_bar";
 
 const app = document.querySelector("#app") as HTMLDivElement;
 
+const canvas = document.createElement("canvas");
+canvas.width = 1920;
+canvas.height = 1080;
+
 window.onload = () => {
-  app.append(createMenuBarUI());
+  app.append(canvas);
 };
