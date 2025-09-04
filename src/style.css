@@ -24,3 +24,7 @@ canvas {
   aspect-ratio: 16/9;
   border: 2px solid #aaa;
 }
+
+audio {
+  width: 50vw;
+}
