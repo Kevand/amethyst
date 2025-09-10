@@ -6,12 +6,43 @@ export class AudioEngine {
   public onplay: () => void;
   public spectrum: number[][];
   public player: HTMLAudioElement;
+  public audioFile: null | File;
 
   constructor(app: App) {
+    this.audioFile = null;
     this._app = app;
     this.onplay = () => {};
     this.spectrum = [];
     this.player = document.createElement("audio");
+  }
+
+  public setTime(seconds: number) {
+    this.player.currentTime = seconds;
+  }
+
+  public smoothedSpectrum: number[] = [];
+
+  public get bass() {
+    const s = this.getSpectrum();
+    if (this.smoothedSpectrum.length !== s.length) {
+      for (let i = 0; i < s.length; i++) this.smoothedSpectrum[i] = 0;
+    }
+    for (let i = 0; i < s.length; i++) {
+      this.smoothedSpectrum[i] =
+        0.95 * this.smoothedSpectrum[i] + (1 - 0.95) * s[i];
+    }
+
+    let avg = 0;
+
+    const vals = this.smoothedSpectrum.slice(0, 16);
+
+    for (let i = 0; i < vals.length; i++) {
+      avg += vals[i];
+    }
+
+    avg /= vals.length;
+
+    return avg;
   }
 
   public get controls() {
@@ -19,7 +50,7 @@ export class AudioEngine {
     wrapper.classList.add("audio-wrapper");
 
     this.player.controls = true;
-    this.player.volume = 0.1;
+    this.player.volume = 0.05;
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -35,12 +66,23 @@ export class AudioEngine {
     return this.spectrum[frame];
   }
 
+  public get frame() {
+    return Math.floor(this.player.currentTime * 60);
+  }
+
+  public getSpectrum() {
+    const frame = Math.floor(this.player.currentTime * 60);
+    return this.spectrum[frame];
+  }
+
   private async _onFileChanged(e: Event) {
     const target = e.target as HTMLInputElement;
 
     if (!target.files) return;
 
     const file = target.files[0];
+
+    this.audioFile = file;
 
     this._app.statusBar.writeStatus("Decoding Audio");
 
@@ -62,8 +104,8 @@ export class AudioEngine {
     const samplesPerFrame = Math.floor(sampleRate / 60);
     const numFrames = Math.ceil(buffer.length / samplesPerFrame);
 
-    const fft = new FFT(1024);
-    const input = new Array(1024).fill(0);
+    const fft = new FFT(4096);
+    const input = new Array(4096).fill(0);
     const output = fft.createComplexArray();
 
     const spectra = [];
@@ -72,7 +114,7 @@ export class AudioEngine {
       const startSample = frame * samplesPerFrame;
 
       // mix channels into one frame
-      for (let i = 0; i < 1024; i++) {
+      for (let i = 0; i < 4096; i++) {
         input[i] = 0;
         for (let ch = 0; ch < numChannels; ch++) {
           const channelData = buffer.getChannelData(ch);
@@ -87,7 +129,7 @@ export class AudioEngine {
 
       // compute magnitude
       const magnitudes = [];
-      for (let i = 0; i < 1024 / 2; i++) {
+      for (let i = 0; i < 4096 / 2; i++) {
         const re = output[i * 2];
         const im = output[i * 2 + 1];
         magnitudes[i] = Math.sqrt(re * re + im * im);
