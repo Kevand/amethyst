@@ -1,7 +1,6 @@
 import type { App } from "../app";
 import logoSrc from "../../public/logo.svg";
-import { ImageComponent } from "../components/image";
-import { legacyRender, render } from "../render";
+import { legacyRender } from "../render";
 import type { SaveFile } from "../helpers";
 
 export class MenuBar {
