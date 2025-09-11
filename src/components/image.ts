@@ -12,7 +12,7 @@ export class ImageComponent extends Component {
 
     this.properties.set("source", {
       name: "Source",
-      type: "file",
+      type: "image",
       value: "",
       onChange(val) {
         self.image.src = val;

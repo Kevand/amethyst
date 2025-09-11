@@ -23,8 +23,9 @@ export class OptionsBar {
       const input = document.createElement("input");
 
       switch (val.type) {
-        case "file": {
+        case "image": {
           input.type = "file";
+          input.accept = "image/*";
 
           input.onchange = async () => {
             const file = input.files![0];

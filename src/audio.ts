@@ -54,6 +54,7 @@ export class AudioEngine {
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
+    fileInput.accept = "audio/*";
     fileInput.onchange = (ev) => this._onFileChanged(ev);
 
     wrapper.append(this.player, fileInput);

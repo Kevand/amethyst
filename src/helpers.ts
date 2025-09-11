@@ -62,7 +62,7 @@ export type ComponentProperty =
     }
   | {
       name: string;
-      type: "file";
+      type: "image";
       value: string;
       onChange?: (val: string) => void;
     };

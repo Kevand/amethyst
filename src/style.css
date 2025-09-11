@@ -214,6 +214,7 @@ button {
       padding: 0.3rem;
       font-size: 1.1rem;
       background: var(--black);
+      max-width: 60%;
     }
   }
 }
