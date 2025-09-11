@@ -13,6 +13,7 @@ import { StatusBar } from "./ui/statusBar";
 import { ParticlesComponent } from "./components/particles";
 import { RectangleComponent } from "./components/rectangle";
 import { ContextMenu } from "./ui/contextmenu";
+import { RadialSpectrum } from "./components/radialspectrum";
 
 export class App extends EventEmitter {
   public appElement: HTMLDivElement;
@@ -54,6 +55,7 @@ export class App extends EventEmitter {
 
   private registerComponents() {
     this.componentRegistry.set("audio-spectrum", AudioSpectrum);
+    this.componentRegistry.set("radial-spectrum", RadialSpectrum);
     this.componentRegistry.set("image", ImageComponent);
     this.componentRegistry.set("particles", ParticlesComponent);
     this.componentRegistry.set("rectangle", RectangleComponent);

@@ -19,7 +19,7 @@ export class Component extends EventEmitter {
     this.properties.set("name", {
       name: "Name",
       type: "string",
-      value: `New Component ${this.id}`,
+      value: `${this.constructor.name} ${this.id}`,
       onChange(val) {
         self.emit("namechanged", val);
       },
