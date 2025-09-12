@@ -136,6 +136,10 @@ export class App extends EventEmitter {
       this.addComponent(newComp);
     }
 
+    this.components = this.components.sort((a, b) => {
+      return a.getProperty<number>("layer") - b.getProperty<number>("layer");
+    });
+
     return true;
   }
 
