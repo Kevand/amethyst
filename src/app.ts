@@ -1,4 +1,5 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { toBlobURL } from "@ffmpeg/util";
 import { AudioEngine } from "./audio";
 import type { Component } from "./components/component";
 import { ImageComponent } from "./components/image";
@@ -50,7 +51,6 @@ export class App extends EventEmitter {
     this.components = [];
     this.componentIdCounter = 1;
     this.registerComponents();
-    this.loadFFmpeg();
   }
 
   private registerComponents() {
@@ -79,16 +79,30 @@ export class App extends EventEmitter {
   }
 
   public async loadFFmpeg() {
-    const baseUrl =
-      "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm";
     this.ffmpeg.on("log", ({ type, message }) => {
       console.log(`[${type}]`, message);
     });
 
-    await this.ffmpeg.load({
-      coreURL: `${baseUrl}/ffmpeg-core.js`,
-      wasmURL: `${baseUrl}/ffmpeg-core.wasm`,
+    this.ffmpeg.on("progress", ({ progress }) => {
+      this.statusBar.writeStatus(`Rendering: ${(progress * 100).toFixed(1)}`);
     });
+
+    const baseURL =
+      "https://cdn.jsdelivr.net/npm/@ffmpeg/core-mt@0.12.10/dist/esm";
+
+    await this.ffmpeg.load({
+      coreURL: await toBlobURL(baseURL + "/ffmpeg-core.js", "text/javascript"),
+      wasmURL: await toBlobURL(
+        baseURL + "/ffmpeg-core.wasm",
+        "application/wasm"
+      ),
+      workerURL: await toBlobURL(
+        baseURL + "/ffmpeg-core.worker.js",
+        "text/javascript"
+      ),
+    });
+
+    this.statusBar.writeStatus("FFMpeg Loaded");
   }
 
   public loadPreset(name: string, textContent: string = "") {

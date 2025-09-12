@@ -3,12 +3,12 @@ import type { Component } from "../components/component";
 
 export class OptionsBar {
   private e: HTMLDivElement;
-  private _app: App;
+  //private _app: App;
 
-  constructor(app: App) {
+  constructor(_: App) {
     this.e = document.createElement("div");
     this.e.classList.add("options-bar");
-    this._app = app;
+    //this._app = app;
   }
 
   setComponent(c: Component | null) {

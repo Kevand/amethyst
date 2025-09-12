@@ -1,6 +1,6 @@
 import type { App } from "../app";
 import logoSrc from "../../public/logo.svg";
-import { legacyRender } from "../render";
+import { legacyRender, render } from "../render";
 import type { SaveFile } from "../helpers";
 
 export class MenuBar {
@@ -178,8 +178,8 @@ export class MenuBar {
       legacyRender(this._app);
     };
 
-    this.e.append(addMenuBtn, saveButton, loadButton);
-    this.e.append(this._app.engine.controls, renderButton);
+    this.e.append(addMenuBtn, saveButton, loadButton, renderButton);
+    this.e.append(this._app.engine.controls);
 
     return this.e;
   }

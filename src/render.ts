@@ -1,11 +1,22 @@
 import type { App } from "./app";
 
 export async function render(app: App) {
+  if (!app.engine.player.src || app.engine.player.src.length === 0) {
+    app.statusBar.writeStatus("Could not render: no audio selected");
+    return;
+  }
+
+  app.statusBar.writeStatus("Loading FFMPEG");
+
+  await app.loadFFmpeg();
+
+  app.statusBar.writeStatus("FFMPEG Loaded");
+
   const totalFrames = app.engine.spectrum.length;
   const audioFile = app.engine.audioFile;
   const fps = 60;
   const prefix = "frame";
-  const duration = totalFrames / fps; // in seconds
+  //const duration = totalFrames / fps; // in seconds
   const canvas = app.canvas.view;
 
   const frames: Uint8Array[] = [];
@@ -14,48 +25,25 @@ export async function render(app: App) {
     return new Promise((res) => {
       canvas.toBlob(async (blob) => {
         if (!blob) throw new Error("Failed to render");
-        const arr = new Uint8Array(await blob.arrayBuffer());
-        res(arr);
+
+        res(new Uint8Array(await blob.arrayBuffer()));
       }, "image/png");
     });
   }
 
-  function canvasToPPM(): Uint8Array {
-    const ctx = canvas.getContext("2d")!;
-    const { width, height } = canvas;
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const rgb = new Uint8Array(width * height * 3);
-
-    // Convert RGBA → RGB (drop alpha)
-    for (let i = 0, j = 0; i < imageData.data.length; i += 4, j += 3) {
-      rgb[j] = imageData.data[i]; // R
-      rgb[j + 1] = imageData.data[i + 1]; // G
-      rgb[j + 2] = imageData.data[i + 2]; // B
-    }
-
-    const header = `P6\n${width} ${height}\n255\n`;
-    const headerBytes = new TextEncoder().encode(header);
-
-    const ppm = new Uint8Array(headerBytes.length + rgb.length);
-    ppm.set(headerBytes, 0);
-    ppm.set(rgb, headerBytes.length);
-
-    return ppm;
-  }
+  app.statusBar.writeStatus("Rendering frames");
 
   for (let i = 0; i < totalFrames; i++) {
     const t = i / fps;
 
     app.engine.setTime(t);
 
-    const bytes = canvasToPPM();
+    const bytes = await canvasToUint8Array();
     frames.push(bytes);
   }
 
-  console.log(frames[0]);
-
   for (let i = 0; i < frames.length; i++) {
-    const name = `${prefix}${String(i).padStart(5, "0")}.ppm`;
+    const name = `${prefix}${String(i).padStart(5, "0")}.png`;
     app.ffmpeg.writeFile(name, frames[i]);
   }
 
@@ -67,7 +55,7 @@ export async function render(app: App) {
   app.ffmpeg.writeFile(audioName, audioData);
 
   const outName = "out.webm";
-  const pattern = `${prefix}%05d.ppm`;
+  //const pattern = `${prefix}%05d.ppm`;
 
   console.log(await app.ffmpeg.listDir("/"));
 
@@ -75,11 +63,7 @@ export async function render(app: App) {
     "-framerate",
     String(fps),
     "-i",
-    "frame%05d.ppm",
-    "-c:v",
-    "libvpx",
-    "-pix_fmt",
-    "yuv420p",
+    "frame%05d.png",
     "out.webm",
   ];
 
@@ -103,6 +87,8 @@ export async function render(app: App) {
     outName,
   ];*/
 
+  app.statusBar.writeStatus("Transcoding");
+
   await app.ffmpeg.exec(args);
 
   const data = await app.ffmpeg.readFile(outName);
@@ -115,23 +101,101 @@ export async function render(app: App) {
   a.click();
 }
 
+async function addAudio(app: App, blob: Blob) {
+  if (!app.engine.player.src || app.engine.player.src.length === 0) {
+    app.statusBar.writeStatus("Could not render: no audio selected");
+    return;
+  }
+
+  app.statusBar.writeStatus("Loading FFMPEG");
+
+  await app.loadFFmpeg();
+
+  app.statusBar.writeStatus("FFMPEG Loaded");
+
+  const videoFile = new Uint8Array(await blob.arrayBuffer());
+
+  const audioFile = app.engine.audioFile;
+
+  const audioName = audioFile
+    ? "audio_input" + (audioFile.name ? `_${audioFile.name}` : ".mp3")
+    : "";
+  const audioData = new Uint8Array(await audioFile!.arrayBuffer());
+
+  app.ffmpeg.writeFile(audioName, audioData);
+  app.ffmpeg.writeFile("video.mp4", videoFile);
+
+  const outName = "out.mp4";
+  //const pattern = `${prefix}%05d.ppm`;
+
+  console.log(await app.ffmpeg.listDir("/"));
+
+  const args: string[] = [
+    "-i",
+    "video.mp4",
+    "-i",
+    audioName,
+    "-c:v",
+    "copy",
+    "-shortest",
+    "out.mp4",
+  ];
+
+  app.statusBar.writeStatus("Transcoding");
+
+  await app.ffmpeg.exec(args);
+
+  const data = await app.ffmpeg.readFile(outName);
+  const finalBlob = new Blob([data], { type: "video/mp4" });
+  const url = URL.createObjectURL(finalBlob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = outName;
+  a.click();
+}
+
 export async function legacyRender(app: App) {
+  if (!app.engine.player.src || app.engine.player.src.length === 0) {
+    app.statusBar.writeStatus("Could not render: no audio selected");
+    return;
+  }
+
+  const types = [
+    "video/webm",
+    "audio/webm",
+    "video/webm;codecs=vp8",
+    "video/webm;codecs=daala",
+    "video/webm;codecs=h264",
+    "audio/webm;codecs=opus",
+    "video/mp4",
+    "video/mp4;codecs=avc1.64003E,mp4a.40.2",
+    "video/mp4;codecs=avc1.64003E,opus",
+    "video/mp4;codecs=avc3.64003E,mp4a.40.2",
+    "video/mp4;codecs=avc3.64003E,opus",
+    "video/mp4;codecs=hvc1.1.6.L186.B0,mp4a.40.2",
+    "video/mp4;codecs=hvc1.1.6.L186.B0,opus",
+    "video/mp4;codecs=hev1.1.6.L186.B0,mp4a.40.2",
+    "video/mp4;codecs=hev1.1.6.L186.B0,opus",
+    "video/mp4;codecs=av01.0.19M.08,mp4a.40.2",
+    "video/mp4;codecs=av01.0.19M.08,opus",
+  ];
+
+  for (const type of types) {
+    console.log(
+      `Is ${type} supported? ${
+        MediaRecorder.isTypeSupported(type) ? "Yes!" : "Nope :("
+      }`
+    );
+  }
+
+  // disable all buttons
+
   const stream = app.canvas.view.captureStream(60); // fps
-  const audioElement = app.engine.player;
-
-  const context = new AudioContext();
-  const dest = context.createMediaStreamDestination();
-  const audioStream = context.createMediaStreamSource(
-    //@ts-ignore
-    audioElement.captureStream()
-  );
-  audioStream.connect(dest);
-
-  stream.addTrack(dest.stream.getAudioTracks()[0]);
 
   const recorder = new MediaRecorder(stream, {
-    mimeType: "video/mp4",
-    videoBitsPerSecond: 2500000,
+    mimeType: "video/mp4;codecs=av01.0.19M.08",
+    videoBitsPerSecond: 15000000,
   });
   const chunks: Blob[] = [];
 
@@ -143,14 +207,8 @@ export async function legacyRender(app: App) {
   recorder.onstop = () => {
     console.log("Recorder finished");
 
-    const blob = new Blob(chunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-    // download or play
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "out.webm";
-    a.click();
+    const blob = new Blob(chunks, { type: "video/mp4" });
+    addAudio(app, blob);
   };
 
   recorder.onstart = () => {

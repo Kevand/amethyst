@@ -31,9 +31,24 @@ canvas {
 .audio-wrapper {
   display: flex;
   align-items: center;
+  height: 100%;
+  flex: 1;
+  justify-content: right;
 
-  & audio {
-    width: 50vw;
+  & .select-file-button {
+    height: 100%;
+    padding-inline: 2rem;
+    &:hover {
+      background: var(--black);
+    }
+  }
+
+  & span {
+    margin-inline: 1rem;
+  }
+
+  & input[type="range"] {
+    width: 30vw;
     margin-right: 1rem;
   }
 }
@@ -53,16 +68,23 @@ button {
   height: 5rem;
   display: flex;
   align-items: center;
-  background: var(--black);
-  padding-inline: 1rem;
+  background: var(--dark);
+  border-bottom: 3px solid var(--lighter-gray);
+  padding-left: 1rem;
 
   & img {
     max-width: 3rem;
+    margin-right: 1rem;
   }
 
   & > button {
     position: relative;
     padding-inline: 1rem;
+    height: 100%;
+
+    &:hover {
+      background: var(--black);
+    }
 
     & div {
       position: absolute;
