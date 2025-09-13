@@ -65,12 +65,12 @@ export class ImageComponent extends Component {
   private _shakeSmoothing = 0.95;
 
   draw(ctx: CanvasRenderingContext2D): void {
-    const positionX = this.properties.get("position-x")?.value as number;
-    const positionY = this.properties.get("position-y")?.value as number;
-    const scale = this.properties.get("scale")?.value as number;
-    const bassReact = this.properties.get("bass-react")?.value as number;
-    const maxShake = this.properties.get("max-shake")?.value as number;
-    const bassShake = this.properties.get("bass-shake")?.value as boolean;
+    const positionX = this.getProperty<number>("position-x");
+    const positionY = this.getProperty<number>("position-y");
+    const scale = this.getProperty<number>("scale");
+    const bassReact = this.getProperty<number>("bass-react");
+    const maxShake = this.getProperty<number>("max-shake");
+    const bassShake = this.getProperty<number>("bass-shake");
 
     const bassValue = this.app.engine.bass * (bassReact / 100);
 

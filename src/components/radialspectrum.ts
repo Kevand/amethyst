@@ -6,9 +6,6 @@ export class RadialSpectrum extends Component {
   constructor(app: App, key: string) {
     super(app, key);
 
-    this.properties.delete("anchor-x");
-    this.properties.delete("anchor-y");
-
     this.properties.set("amplitude", {
       name: "Amplitude",
       type: "number",

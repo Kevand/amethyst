@@ -6,6 +6,24 @@ export class AudioSpectrum extends Component {
   constructor(app: App, key: string) {
     super(app, key);
 
+    this.properties.set("anchor-x", {
+      name: "Anchor X",
+      type: "number",
+      value: 0,
+      min: -999999,
+      max: 999999,
+      step: 1,
+    });
+
+    this.properties.set("anchor-y", {
+      name: "Anchor Y",
+      type: "number",
+      value: 0,
+      min: -999999,
+      max: 999999,
+      step: 1,
+    });
+
     this.properties.set("amplitude", {
       name: "Amplitude",
       type: "number",

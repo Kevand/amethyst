@@ -51,22 +51,6 @@ export class Component extends EventEmitter {
       max: 999999,
       step: 1,
     });
-    this.properties.set("anchor-x", {
-      name: "Anchor X",
-      type: "number",
-      value: 0,
-      min: -999999,
-      max: 999999,
-      step: 1,
-    });
-    this.properties.set("anchor-y", {
-      name: "Anchor Y",
-      type: "number",
-      value: 0,
-      min: -999999,
-      max: 999999,
-      step: 1,
-    });
   }
 
   public clone(): Component {

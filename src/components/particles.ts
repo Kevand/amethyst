@@ -5,6 +5,24 @@ export class ParticlesComponent extends Component {
   constructor(app: App, key: string) {
     super(app, key);
 
+    this.properties.set("width", {
+      name: "Width",
+      type: "number",
+      value: 0,
+      min: -999999,
+      max: 999999,
+      step: 1,
+    });
+
+    this.properties.set("Height", {
+      name: "Height",
+      type: "number",
+      value: 0,
+      min: -999999,
+      max: 999999,
+      step: 1,
+    });
+
     this.properties.set("color", {
       name: "color",
       value: "#ffffff",
@@ -97,8 +115,8 @@ export class ParticlesComponent extends Component {
 
     const posX = this.getProperty<number>("position-x");
     const posY = this.getProperty<number>("position-y");
-    const anchorX = this.getProperty<number>("anchor-x");
-    const anchorY = this.getProperty<number>("anchor-y");
+    const width = this.getProperty<number>("width");
+    const height = this.getProperty<number>("height");
 
     const velocity = this.getProperty<number>("base-velocity");
     const color = this.getProperty<string>("color");
@@ -114,8 +132,8 @@ export class ParticlesComponent extends Component {
     let pv = (1 / 2) * (1 - Math.random() * 2);
     let pSize = (sizeSpread / 2) * (1 - Math.random() * 2);
 
-    const randomX = posX + Math.floor(Math.random() * (anchorX - posX));
-    const randomY = posY + Math.floor(Math.random() * (anchorY - posY));
+    const randomX = posX + Math.floor(Math.random() * (width - posX));
+    const randomY = posY + Math.floor(Math.random() * (height - posY));
 
     if (this.particles.length < count)
       this.particles.push(
