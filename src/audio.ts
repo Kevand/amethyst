@@ -71,18 +71,19 @@ export class AudioEngine {
     wrapper.classList.add("audio-wrapper");
 
     const playButton = document.createElement("button");
-    playButton.innerText = "▶";
+    playButton.classList.add("material-symbols-outlined");
+    playButton.innerText = "play_circle";
     playButton.onclick = () => {
       if (!this.player.src || this.player.src.length === 0) return;
 
       if (this.player.paused) {
         this.player.play();
         requestAnimationFrame(() => this._whilePlaying());
-        playButton.innerHTML = "⏸";
+        playButton.innerHTML = "pause_circle";
       } else {
         this.player.pause();
         cancelAnimationFrame(this._rAF);
-        playButton.innerText = "▶";
+        playButton.innerText = "play_circle";
       }
     };
 

@@ -19,15 +19,20 @@ export class HierarchyBar {
         wrapper.classList.add("hierarchy-component");
 
         const visibleToggle = document.createElement("button");
-        visibleToggle.classList.add("visible-toggle");
-        visibleToggle.innerText = "Hide";
+        visibleToggle.classList.add(
+          "visible-toggle",
+          "material-symbols-outlined"
+        );
+        visibleToggle.innerText = "visibility";
 
         visibleToggle.onclick = () => {
           if (c.visible) {
-            visibleToggle.innerText = "Show";
+            visibleToggle.innerText = "visibility_off";
+            visibleToggle.classList.add("hidden");
             c.visible = false;
           } else {
-            visibleToggle.innerText = "Hide";
+            visibleToggle.innerText = "visibility";
+            visibleToggle.classList.remove("hidden");
             c.visible = true;
           }
         };
@@ -58,7 +63,7 @@ export class HierarchyBar {
           this._app.contextMenu.content = contextMenu;
         };
 
-        wrapper.append(b, visibleToggle);
+        wrapper.append(visibleToggle, b);
 
         this.e.append(wrapper);
       }
