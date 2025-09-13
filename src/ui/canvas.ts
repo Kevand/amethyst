@@ -20,6 +20,7 @@ export class Canvas {
 
     if (this._app.engine.getSpectrum()) {
       for (const c of this._app.components) {
+        if (!c.visible) continue;
         c.update(this._app.engine.frame);
         c.draw(this.ctx);
       }

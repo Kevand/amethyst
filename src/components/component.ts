@@ -6,6 +6,7 @@ export class Component extends EventEmitter {
   protected app: App;
   public id: number;
   public key: string;
+  public visible: boolean;
 
   constructor(app: App, key: string) {
     super();
@@ -13,6 +14,7 @@ export class Component extends EventEmitter {
     this.id = app.componentIdCounter++;
     this.properties = new Map();
     this.key = key;
+    this.visible = true;
 
     const self = this;
 
