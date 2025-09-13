@@ -14,7 +14,7 @@ export class ParticlesComponent extends Component {
       step: 1,
     });
 
-    this.properties.set("Height", {
+    this.properties.set("height", {
       name: "Height",
       type: "number",
       value: 0,
@@ -130,7 +130,7 @@ export class ParticlesComponent extends Component {
     let ps = (spread / 2) * (1 - Math.random() * 2);
     let pl = (60 / 2) * (1 - Math.random() * 2);
     let pv = (1 / 2) * (1 - Math.random() * 2);
-    let pSize = (sizeSpread / 2) * (1 - Math.random() * 2);
+    let pSize = (sizeSpread / 2) * 1 - Math.random() * 2;
 
     const randomX = posX + Math.floor(Math.random() * (width - posX));
     const randomY = posY + Math.floor(Math.random() * (height - posY));
