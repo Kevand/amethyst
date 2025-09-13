@@ -58,7 +58,14 @@ export class HierarchyBar {
             contextMenu.remove();
           };
 
-          contextMenu.append(deleteButton);
+          const duplicateButton = document.createElement("button");
+          duplicateButton.innerText = "Duplicate";
+          duplicateButton.onclick = () => {
+            this._app.duplicateComponent(c);
+            console.log(this._app.components);
+          };
+
+          contextMenu.append(deleteButton, duplicateButton);
 
           this._app.contextMenu.content = contextMenu;
         };

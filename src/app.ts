@@ -4,7 +4,7 @@ import { AudioEngine } from "./audio";
 import type { Component } from "./components/component";
 import { ImageComponent } from "./components/image";
 import { AudioSpectrum } from "./components/spectrum";
-import { EventEmitter, type SaveFile } from "./helpers";
+import { EventEmitter, type SaveComponent, type SaveFile } from "./helpers";
 import { Canvas } from "./ui/canvas";
 import { HierarchyBar } from "./ui/hierarchyBar";
 import { MenuBar } from "./ui/menuBar";
@@ -105,6 +105,33 @@ export class App extends EventEmitter {
     this.statusBar.writeStatus("FFMpeg Loaded");
   }
 
+  public saveComponent(c: Component): SaveComponent {
+    const props = Array.from(c.properties.entries());
+
+    return {
+      key: c.key,
+      props,
+    };
+  }
+
+  public loadComponent(comp: SaveComponent) {
+    const c = this.componentRegistry.get(comp.key);
+    if (!c) return;
+
+    const newComp = new c(this, comp.key);
+
+    for (const [key, val] of comp.props) {
+      newComp.properties.set(key, val);
+
+      // Workaround for an image component, can't find a better way
+      if (newComp instanceof ImageComponent && key == "source") {
+        newComp.image.src = val.value as string;
+      }
+    }
+
+    this.addComponent(newComp);
+  }
+
   public loadPreset(name: string, textContent: string = "") {
     let json: string | null;
 
@@ -120,20 +147,7 @@ export class App extends EventEmitter {
     this.components = [];
 
     for (const comp of saveFile.components) {
-      const c = this.componentRegistry.get(comp.key);
-      if (!c) continue;
-
-      const newComp = new c(this, comp.key);
-
-      for (const [key, val] of comp.props) {
-        newComp.properties.set(key, val);
-
-        if (newComp instanceof ImageComponent && key == "source") {
-          newComp.image.src = val.value as string;
-        }
-      }
-
-      this.addComponent(newComp);
+      this.loadComponent(comp);
     }
 
     this.components = this.components.sort((a, b) => {
@@ -141,6 +155,12 @@ export class App extends EventEmitter {
     });
 
     return true;
+  }
+
+  public duplicateComponent(c: Component) {
+    // First save to string, then load from string, weird way but diffrent ways didn't work :/
+    const save = JSON.stringify(this.saveComponent(c));
+    this.loadComponent(JSON.parse(save));
   }
 
   public savePreset() {
@@ -171,20 +191,20 @@ export class App extends EventEmitter {
 
       const comps = this.components;
 
-      let list: any[] = [];
+      let list: SaveComponent[] = [];
 
       for (const c of comps) {
-        const props = Array.from(c.properties.entries());
-
-        list.push({
-          key: c.key,
-          props,
-        });
+        list.push(this.saveComponent(c));
       }
 
       save.components.push(...list);
 
       const text = JSON.stringify(save);
+
+      let name = saveNameInput.value;
+      if (name.length === 0) {
+        name = `Save from ${timestamp}`;
+      }
 
       localStorage.setItem(`save_${saveNameInput.value}`, text);
 
