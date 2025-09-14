@@ -7,6 +7,8 @@ export class Component extends EventEmitter {
   public id: number;
   public key: string;
   public visible: boolean;
+  public canvas: OffscreenCanvas;
+  protected _ctx: OffscreenCanvasRenderingContext2D;
 
   constructor(app: App, key: string) {
     super();
@@ -14,6 +16,10 @@ export class Component extends EventEmitter {
     this.id = app.componentIdCounter++;
     this.properties = new Map();
     this.key = key;
+    this.canvas = new OffscreenCanvas(1920, 1080);
+    this._ctx = this.canvas.getContext(
+      "2d"
+    ) as OffscreenCanvasRenderingContext2D;
     this.visible = true;
 
     const self = this;
@@ -55,10 +61,6 @@ export class Component extends EventEmitter {
     });
   }
 
-  public clone(): Component {
-    throw new Error("Not Implemented");
-  }
-
   public getProperty<T>(name: string) {
     return this.properties.get(name)?.value as T;
   }
@@ -67,5 +69,5 @@ export class Component extends EventEmitter {
   update(frame: number) {}
 
   //@ts-ignore
-  draw(ctx: CanvasRenderingContext2D) {}
+  draw() {}
 }

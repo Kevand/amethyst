@@ -178,7 +178,7 @@ export class RadialSpectrum extends Component {
     return out;
   }
 
-  draw(ctx: CanvasRenderingContext2D): void {
+  draw(): void {
     const delay = this.properties.get("delay")!.value as number;
 
     this.smoothSpectrum(this.app.engine.getDelayedSpectrum(delay));
@@ -202,7 +202,7 @@ export class RadialSpectrum extends Component {
       spectrum.reverse();
     }
 
-    ctx.strokeStyle = color;
+    this._ctx.strokeStyle = color;
 
     const angleStep = (circleLength / barCount) * (Math.PI / 180); // in radians
     const rot = rotation * (Math.PI / 180);
@@ -213,15 +213,15 @@ export class RadialSpectrum extends Component {
       const x = positionX + Math.cos(barAngle) * circleRadius;
       const y = positionY + Math.sin(barAngle) * circleRadius;
 
-      ctx.lineWidth = thickness;
-      ctx.beginPath();
+      this._ctx.lineWidth = thickness;
+      this._ctx.beginPath();
 
-      ctx.moveTo(x, y);
-      ctx.lineTo(
+      this._ctx.moveTo(x, y);
+      this._ctx.lineTo(
         x + Math.cos(barAngle) * spectrum[i] * amplitude,
         y + Math.sin(barAngle) * spectrum[i] * amplitude
       );
-      ctx.stroke();
+      this._ctx.stroke();
     }
   }
 }

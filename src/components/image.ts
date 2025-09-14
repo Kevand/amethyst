@@ -53,18 +53,11 @@ export class ImageComponent extends Component {
     });
   }
 
-  public clone() {
-    const c = new ImageComponent(this.app, this.key);
-    c.image = this.image;
-    c.properties = Object.assign({}, this.properties);
-    return c;
-  }
-
   private _prevShakeX = 0;
   private _prevShakeY = 0;
   private _shakeSmoothing = 0.95;
 
-  draw(ctx: CanvasRenderingContext2D): void {
+  draw(): void {
     const positionX = this.getProperty<number>("position-x");
     const positionY = this.getProperty<number>("position-y");
     const scale = this.getProperty<number>("scale");
@@ -90,17 +83,17 @@ export class ImageComponent extends Component {
     this._prevShakeX = shakeX;
     this._prevShakeY = shakeY;
 
-    ctx.save();
+    this._ctx.save();
 
     let bassedScale = scale + bassValue;
 
     if (bassShake) {
-      ctx.translate(positionX + shakeX, positionY + shakeY);
+      this._ctx.translate(positionX + shakeX, positionY + shakeY);
     } else {
-      ctx.translate(positionX, positionY);
+      this._ctx.translate(positionX, positionY);
     }
 
-    ctx.drawImage(
+    this._ctx.drawImage(
       this.image,
       (-this.image.width / 2) * bassedScale,
       (-this.image.height / 2) * bassedScale,
@@ -108,6 +101,6 @@ export class ImageComponent extends Component {
       this.image.height * bassedScale
     );
 
-    ctx.restore();
+    this._ctx.restore();
   }
 }

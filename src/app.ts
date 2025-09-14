@@ -207,8 +207,6 @@ export class App extends EventEmitter {
       }
 
       localStorage.setItem(`save_${saveNameInput.value}`, text);
-
-      // saving a local file
     };
   }
 

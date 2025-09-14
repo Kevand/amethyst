@@ -22,7 +22,9 @@ export class Canvas {
       for (const c of this._app.components) {
         if (!c.visible) continue;
         c.update(this._app.engine.frame);
-        c.draw(this.ctx);
+        c.draw();
+
+        this.ctx.drawImage(c.canvas, 0, 0);
       }
     }
 

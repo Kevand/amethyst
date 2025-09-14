@@ -178,7 +178,7 @@ export class AudioSpectrum extends Component {
     return Math.atan2(anchorY - positionY, anchorX - positionX) - Math.PI / 2;
   }
 
-  draw(ctx: CanvasRenderingContext2D): void {
+  draw(): void {
     const delay = this.properties.get("delay")!.value as number;
 
     this.smoothSpectrum(this.app.engine.getDelayedSpectrum(delay));
@@ -203,21 +203,21 @@ export class AudioSpectrum extends Component {
       spectrum.reverse();
     }
 
-    ctx.strokeStyle = color;
+    this._ctx.strokeStyle = color;
 
     for (let i = 0; i < barCount; i++) {
       const x = lerp(positionX, anchorX, i / barCount);
       const y = lerp(positionY, anchorY, i / barCount);
 
-      ctx.lineWidth = thickness;
-      ctx.beginPath();
+      this._ctx.lineWidth = thickness;
+      this._ctx.beginPath();
 
-      ctx.moveTo(x, y);
-      ctx.lineTo(
+      this._ctx.moveTo(x, y);
+      this._ctx.lineTo(
         x + Math.cos(angle) * spectrum[i] * amplitude,
         y + Math.sin(angle) * spectrum[i] * amplitude
       );
-      ctx.stroke();
+      this._ctx.stroke();
     }
   }
 }

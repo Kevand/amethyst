@@ -36,15 +36,15 @@ export class RectangleComponent extends Component {
     return c;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw() {
     const posX = this.getProperty<number>("position-x");
     const posY = this.getProperty<number>("position-y");
     const anchorX = this.getProperty<number>("width");
     const anchorY = this.getProperty<number>("height");
     const color = this.getProperty<string>("color");
 
-    ctx.fillStyle = color;
+    this._ctx.fillStyle = color;
 
-    ctx.fillRect(posX, posY, anchorX, anchorY);
+    this._ctx.fillRect(posX, posY, anchorX, anchorY);
   }
 }

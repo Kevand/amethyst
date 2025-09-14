@@ -160,9 +160,9 @@ export class ParticlesComponent extends Component {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D): void {
+  draw(): void {
     for (const p of this.particles) {
-      p.draw(ctx);
+      p.draw(this._ctx);
     }
   }
 }
@@ -217,7 +217,7 @@ class Particle {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: OffscreenCanvasRenderingContext2D) {
     ctx.save();
 
     ctx.globalAlpha = this.life / this.baseLife;
