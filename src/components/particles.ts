@@ -161,6 +161,8 @@ export class ParticlesComponent extends Component {
   }
 
   draw(): void {
+    super.draw();
+
     for (const p of this.particles) {
       p.draw(this._ctx);
     }

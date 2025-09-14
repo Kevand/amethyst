@@ -58,6 +58,8 @@ export class ImageComponent extends Component {
   private _shakeSmoothing = 0.95;
 
   draw(): void {
+    super.draw();
+
     const positionX = this.getProperty<number>("position-x");
     const positionY = this.getProperty<number>("position-y");
     const scale = this.getProperty<number>("scale");

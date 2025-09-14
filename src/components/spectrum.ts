@@ -179,21 +179,21 @@ export class AudioSpectrum extends Component {
   }
 
   draw(): void {
-    const delay = this.properties.get("delay")!.value as number;
+    super.draw();
+
+    const delay = this.getProperty<number>("delay");
 
     this.smoothSpectrum(this.app.engine.getDelayedSpectrum(delay));
 
-    const amplitude = this.properties.get("amplitude")!.value as number;
-    const barCount = this.properties.get("bar-count")!.value as number;
-    const thickness = this.properties.get("thickness")!.value as number;
-
-    const positionX = this.properties.get("position-x")!.value as number;
-    const positionY = this.properties.get("position-y")!.value as number;
-    const anchorX = this.properties.get("anchor-x")!.value as number;
-    const anchorY = this.properties.get("anchor-y")!.value as number;
-
-    const reverse = this.properties.get("reverse")!.value as boolean;
-    const color = this.properties.get("color")!.value as string;
+    const amplitude = this.getProperty<number>("amplitude");
+    const barCount = this.getProperty<number>("bar-count");
+    const thickness = this.getProperty<number>("thickness");
+    const positionX = this.getProperty<number>("position-x");
+    const positionY = this.getProperty<number>("position-y");
+    const anchorX = this.getProperty<number>("anchor-x");
+    const anchorY = this.getProperty<number>("anchor-y");
+    const reverse = this.getProperty<boolean>("reverse");
+    const color = this.getProperty<string>("color");
 
     let spectrum = this.barCountAverage();
 

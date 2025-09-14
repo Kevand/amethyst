@@ -68,6 +68,7 @@ export class Component extends EventEmitter {
   //@ts-ignore
   update(frame: number) {}
 
-  //@ts-ignore
-  draw() {}
+  draw() {
+    this._ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
 }

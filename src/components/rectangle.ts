@@ -37,6 +37,8 @@ export class RectangleComponent extends Component {
   }
 
   draw() {
+    super.draw();
+
     const posX = this.getProperty<number>("position-x");
     const posY = this.getProperty<number>("position-y");
     const anchorX = this.getProperty<number>("width");

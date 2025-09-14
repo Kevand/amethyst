@@ -179,6 +179,8 @@ export class RadialSpectrum extends Component {
   }
 
   draw(): void {
+    super.draw();
+
     const delay = this.properties.get("delay")!.value as number;
 
     this.smoothSpectrum(this.app.engine.getDelayedSpectrum(delay));
