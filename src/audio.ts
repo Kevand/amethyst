@@ -132,7 +132,7 @@ export class AudioEngine {
     fileInput.hidden = true;
 
     const selectFileButton = document.createElement("button");
-    selectFileButton.innerText = "Select File";
+    selectFileButton.innerText = "Select Audio";
     selectFileButton.classList.add("select-file-button");
     selectFileButton.onclick = () => {
       fileInput.click();
